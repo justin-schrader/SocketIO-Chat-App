@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Chat</title>
+  </head>
+  <body onload="nameSelect()">
+    <h1 id="roomName"></h1>
+
+    <div>
+    <div class="chatBox" id="chatWindow"></div>
+    <input type="text" id="chatInput">
+    <button id="send" onclick="sendMessage()">Send</button>
+    </div>
+    <div id="userList"></div>
+
+  </body>
+  <link rel="stylesheet" href="https://cdn.materialdesignicons.com/2.5.94/css/materialdesignicons.min.css">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css">
+  <link rel="stylesheet" type="text/css" href="chat.css">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.dev.js"></script>
+  <script type="text/javascript">
+    let socket = io();
+    let roomName = window.location.pathname.substring(1, window.location.pathname.length);
+    let userName = "unnamed";
+
+    socket.on('connect', () => console.log('successfully connected to server'));
+    socket.on("message", (msg) => $('#chatWindow').append(msg.username+': '+msg.message+'<br>'));
+    socket.on('disconnected', (string) => $('#chatWindow').append(string+'<br>'));
+    socket.on('connected', (string) => $('#chatWindow').append(string+'<br>'));
+    socket.on('user list', (data) => {
+      $('#userList').empty();
+      for(let i = 0; i < data['userlist'].length; i++){
+        $('#userList').append(data['userlist'][i]['name']+'<br>');
+      }
+    });
+
+    document.getElementById('roomName').innerHTML = window.location.pathname;
+
+    function sendMessage(){
+        socket.emit('message', {username: userName, roomname: roomName, message: document.getElementById('chatInput').value})
+        document.getElementById('chatInput').value = "";
+    }
+
+    function newRoom(){
+        console.log("new room");
+    }
+
+    function nameSelect(){
+        userName = prompt("Enter a username to chat:", "");
+        socket.emit('join room', {roomname: roomName, username: userName});
+    }
+    
+
+  </script>
+</html>

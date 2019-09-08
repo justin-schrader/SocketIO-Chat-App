@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Chat</title>
+  </head>
+  <body>
+    <div id="root">
+        <button onclick="newRoom()">Create Room</button>
+        <h1>OR</h1>
+        <input type="text" id="room">
+        <button>Join Room</button>
+
+    </div>
+  </body>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.dev.js"></script>
+  <script type="text/javascript">
+    function newRoom(){
+        window.location.href = "/chat";
+    }
+
+  </script>
+</html>
